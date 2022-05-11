@@ -1,0 +1,46 @@
+
+ROLLOUT and VERSIONING:
+    kc rollout status deploy <>
+    kc rollout history deploy <>
+
+DEPLOYMENT STRATEGIES
+    ROLLING UPDATE : # instances at a time. [DEFAULT]
+    - approaches :  modify manifest file and kc apply 
+        or  kc set image=?? deploy <>   #not recommended as manifest file is untouched.
+    implemented: in case of RSet , create a new one, and decommission old RSet (check kc get rs)
+        Rollback easlier .. kc rollout undo deploy <>   # revive older RSet
+    RECREATE: Shutdown and restarts
+
+COMMAND and ENTRYPOINT:
+    In Docker world, ENTRYPOINT defines the deefault caommand not RUN, and subsequent CMD are the variables  like ENTRYPOINT["sleep"] CMD["5"]
+    In K8s world, container uses "command " to replace ENTRYPOINT and "args" for CMD
+    https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+
+VARIABLES: set "env" is array (starts with "-" and value )
+    Other ways CONFIGMAP,  AND SECRETS, for which we use valueFrom [ configMapKeyRef or secretKeyRef] instead of value
+    https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+
+    CONFIGMAP:  Create CM files in a separate directory, 
+      Export existing CM by : kc -n $n get cm  game-config -oyaml 
+      Approach 1:  Imperative way (command line )
+        kc create cm --from-literal=APP_COLOR=blue  --from-literal=APP_MOD=prod
+        kc create configmap game-config --from-file=configure-pod-container/configmap/  ##Create CM from file
+
+      Approach 2: Declartive way ( file based ) using yaml apprach   
+
+
+
+
+
+
+Commands
+create : kc create -f 
+get : kc get deploy
+UPDATE : kc apply -f modified.yaml
+          kc set image deploy <> nginx=xx
+status
+rollback
+    kc rollout status deploy <>
+    kc rollout history .....
+roll back
+    kc rollout undo ...

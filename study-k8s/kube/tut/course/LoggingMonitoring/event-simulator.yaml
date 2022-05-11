@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: event-simulator
+spec:
+  containers:
+    - image:  kodekloud/event-simulator
+      name:  event-simulator
+    - image:  nginx
+      name:  nginx-simulator
+
+
+# kc logs -f event-simulator event-simulator
+#   kc logs -f event-simulator <name of the pod to monitor>

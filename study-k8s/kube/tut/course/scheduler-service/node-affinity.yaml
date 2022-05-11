@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:  ##https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: size
+            operator: Exists            
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In ##In, NotIn, Exists, DoesNotExist, Gt, Lt
+            values:
+            - another-node-label-value
+  containers:
+  - name: myapp
+    image: nginx
+    resources:
+      # limits:
+      #   memory: "128Mi"
+      #   cpu: "500m"
+    ports:
+      - containerPort: 8080

@@ -1,0 +1,7 @@
+apiVersion: v1
+#Run kc apply -f ns-chander.yaml
+#check kc get ns
+kind: Namespace
+metadata:
+  name: chander
+

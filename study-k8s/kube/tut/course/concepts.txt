@@ -1,0 +1,45 @@
+Core concepts: https://kubernetes.io/docs/concepts/overview/components/
+ETCD: Reliable Distributed Key Value Pair {database} which is Fast, Simple and Secure
+    IMPORTANT service. Should consider regular backup: https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster
+    deployed either manually {as a service } or using kubeadm {as a container}. for HA.. prefer service
+    Responsible for storing all K8s Concepts
+    2379 is default port.
+API Server: Enagement lead for all K8s communication. 
+    Only entry point for Kubectl or API intakes
+    6443 is the default port
+Kube-controller-manager:  Reponsible for all K8s concepts controller activities.
+Scheduler: Schedule pending requests from ETCD but no responsible for actual deployment. 
+    Uses logic like Filter nodes and Ranking nodes to decide.
+    Also, relies on resource requirements, limits, taint/tolerance, node affinity/anti-affinity, policy constraints, etc. 
+KubeLet : {Need to be installed on every node exclusively} Responsible for local note managment and communicating with API server.
+KubeProxy: runs on every worker node  Responsible for Svc VIP -> POD mapping using IPFilter (or equivalent)
+
+==CONTROLLER==
+ReplicationController : {older implementation in RS}
+ReplicationSet : Same as RC but has "selector" definition to even manage pods which are not created by RS. 
+    Labels:  "matchLabels" in RS ... 
+    Selectors:
+
+Deployment : Allows pause, updates, rollbacks to the 
+    Pods -> RS -> Deploy
+    Definition is similar to RS
+
+ResourceQuota: NS quote definition
+
+NameSpaces: 
+    isolated environment, 
+    can define policies, quotas per NS,  <res>.<ns>.<k8s=cluster.local> DNS resolution
+    to change defalult ns, use kc config set-context <cur> --namespace=dev
+
+Service: {ClusterIP} {NodePort} {LoadBalancer} {Names?}
+    Virtual IP pointing to end points 
+    NodePort:   External -- (NodePort)30000/tcp -- Svc (port 8080/tcp) ---- pod (targetPort 80/tcp) 
+        use Selector and Labels to attach to the services
+        use "Random" algorithm with SessionAffinity enabled as default. 
+        Chanes 30,000 - 32,767
+    ClusterIP:   (front-end Pods) --- ClusterIP  --- (back-end Pods ) --- ClusterIP --- (dbase Pods)
+        DEFAULT service type is ClusterIP
+        
+
+     
+    

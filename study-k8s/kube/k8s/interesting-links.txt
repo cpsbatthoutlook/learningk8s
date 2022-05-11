@@ -1,0 +1,49 @@
+###Build
+https://michele.sciabarra.com/2018/02/12/devops/Kubernetes-with-KubeAdm-Ansible-Vagrant/
+https://www.aquasec.com/wiki/display/containers/Kubernetes+Architecture+10
+https://www.aquasec.com/wiki/display/containers/70+Best+Kubernetes+Tutorials#id-70BestKubernetesTutorials-vagrant
+
+###Configuratoin
+##Cheat codes
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/ 
+
+##Docker equivalent
+https://kubernetes.io/docs/reference/kubectl/docker-cli-to-kubectl/
+
+
+
+
+
+
+###Deployment
+##Nodejs
+https://seanmcgary.com/posts/how-to-deploy-a-nodejs-app-to-kubernetes/ 
+
+##Php mysql
+https://www.edureka.co/blog/kubernetes-networking/ ##  Hands on create and deploy php/mysql and troubleshoot
+
+
+
+
+###networking
+##Deep dive
+https://dzone.com/articles/how-to-understand-and-setup-kubernetes-networking
+
+##PoC
+https://www.edureka.co/blog/kubernetes-networking/ ##  Hands on create and deploy php/mysql and troubleshoot
+https://www.aquasec.com/wiki/display/containers/70+Best+Kubernetes+Tutorials#id-70BestKubernetesTutorials-network
+
+
+## Troubleshooting 
+https://www.jeffgeerling.com/blog/2019/debugging-networking-issues-multi-node-kubernetes-on-virtualbox  ## General
+https://github.com/coreos/flannel/blob/master/Documentation/troubleshooting.md#vagrant    ##Flannel
+
+
+##Fundamentals
+https://kubernetes.io/docs/tutorials/kubernetes-basics/  ## with hands on
+
+https://proquestcombo-safaribooksonline-com.ezproxy.torontopubliclibrary.ca/book/software-engineering-and-development/deployment/9781491979679
+
+##Playground
+https://www.katacoda.com/courses/kubernetes/playground
+

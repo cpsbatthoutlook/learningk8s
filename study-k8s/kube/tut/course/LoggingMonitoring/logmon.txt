@@ -1,0 +1,16 @@
+Monitoring
+
+OpenSource: {Heapster} depricated to slim-down {Metric Servers}     {Prometheus}        {ELK}
+Commercial: {DataDog} {DynaTrace}
+
+LOGGING: https://kubernetes.io/docs/concepts/cluster-administration/logging/
+2 components of k8s:
+1.  run via container {kube-proxy,coredns etc}
+2.  run  outside container {kubelet, cri etc.}  .. logged in /var/log OR via journald
+
+kc logs:  https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs  
+Std approach:
+1. StdOut capture to logging driver
+2. AT cluster level, using a node logging agent. Optional (ELK, GCP Stackdriver) used by fluentd
+3. Using sidecar container approach. [Node  [app container]<-->[streaming cont.]  ] -->Logfile <---[logging agent pod]
+  takes advantage of kubelet and logging agent.

@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  per-min
+  namespace: chander
+spec:
+  schedule: "* 19 * * *"
+  jobTemplate: 
+    spec: 
+      template:
+        metadata:
+          labels:
+            app: cron-batch-job
+        spec:
+          containers:
+          - name: per-min
+            image: busybox
+            command:
+             - "sh"
+             - "-c"
+             - "date"
+          restartPolicy: Never

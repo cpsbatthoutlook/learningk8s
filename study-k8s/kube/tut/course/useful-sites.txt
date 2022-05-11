@@ -1,0 +1,2 @@
+https://eksworkshop.com/  ## K8s on AWS
+https://medium.com/@nieldw/curling-the-kubernetes-api-server-d7675cfc398c  ##Access API with curl

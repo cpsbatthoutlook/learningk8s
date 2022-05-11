@@ -1,0 +1,63 @@
+
+
+Option1:
+
+https://medium.com/@nieldw/curling-the-kubernetes-api-server-d7675cfc398c
+==== PREPARATION ====
+
+#Create Service
+kubectl create serviceaccount api-explorer
+
+#Create Clusterrole instead roles for being useable across the K8s
+#grant access to pods and their logs
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: log-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "watch", "list"]
+
+#Create RoleBinding
+kubectl create rolebinding api-explorer:log-reader --clusterrole log-reader --serviceaccount default:api-explorer
+
+##Get Bearer token: for api useable
+SERVICE_ACCOUNT=api-explorer
+SECRET=$(kubectl get serviceaccount ${SERVICE_ACCOUNT} -o json | jq -Mr '.secrets[].name | select(contains("token"))')
+    -Mr : remove quotes?
+
+# Extract the Bearer token from the Secret and decode
+TOKEN=$(kubectl get secret ${SECRET} -o json | jq -Mr '.data.token' | base64 -d)
+
+# Extract, decode and write the ca.crt to a temporary location
+kubectl get secret ${SECRET} -o json | jq -Mr '.data["ca.crt"]' | base64 -d > /tmp/ca.crt
+
+# Get the API Server location
+APISERVER=https://$(kubectl -n default get endpoints kubernetes --no-headers | awk '{ print $2 }')
+
+
+==== Use Cases ====
+#Explore Api docs
+curl -s $APISERVER/openapi/v2  --header "Authorization: Bearer $TOKEN" --cacert /tmp/ca.crt | less
+
+#Get Pods logs
+curl -s $APISERVER/api/v1/namespaces/default/pods/ --header "Authorization: Bearer $TOKEN" --cacert /tmp/ca.crt | jq -rM '.items[].metadata.name'
+
+
+
+Option2:
+https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/
+
+#Access without API
+kubectl proxy --port=8088
+curl http://localhost:8080/api/v1
+
+##Get cluster list
+kc config view -ojson | jq ".clusters[].cluster.server"
+export CLUSTER_NAME=""
+APISERVER=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
+TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode)
+##Explore API with token
+curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
+

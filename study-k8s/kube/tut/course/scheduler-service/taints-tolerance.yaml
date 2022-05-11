@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  tolerations:  # kc taint node node1 app=blue:NoSchedule #|NoExecute|PrefereNoSchedule
+  - key:"app"
+    operator:"Equal"
+    value:"blue"
+    effect:"NoSchedule"
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      limits:
+        memory: "128Ki"
+        cpu: "50m"
+    ports:
+      - containerPort: 8088
+
+
+
+
+

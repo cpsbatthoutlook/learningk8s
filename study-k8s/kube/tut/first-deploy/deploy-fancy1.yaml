@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+# kc create deploy fancyapp --image nginx -o yaml --dry-run 
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fancyapp1
+  name: fancyapp1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fancyapp1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fancyapp1
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}

@@ -1,0 +1,4 @@
+192.168.0.177  master.kube  master
+192.168.0.178  node1.kube node1
+192.168.0.179  node2.kube node2
+127.0.0.1   localhost localhost.localdomain

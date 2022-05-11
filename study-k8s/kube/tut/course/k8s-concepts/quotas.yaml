@@ -1,0 +1,22 @@
+apiVersion: v1
+# https://kubernetes.io/docs/concepts/policy/resource-quotas/
+kind: ResourceQuota
+metadata:
+ name: myapp-deploy
+ namespace: chander
+spec:
+ hard:
+      limits.cpu: "100"
+      requests.cpu: "10"  ##container explicitly requests 
+      limits.memory: 400Ki
+      requests.memory: 200Ki ## every incoming container specifies an explicit limit 
+      configmaps: "10"
+      persistentvolumeclaims: "4"
+      pods: "4"
+      replicationcontrollers: "20"
+      secrets: "10"
+      services: "10"
+      services.loadbalancers: "2"  
+
+
+# kc describe resourcequotas myapp-deploy  -n chander

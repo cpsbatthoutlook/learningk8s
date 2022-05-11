@@ -1,0 +1,31 @@
+#https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
+# Reference https://github.com/kubernetes/examples/tree/master/staging/cluster-dns
+
+
+K8-DNS has 3 components: kube-dns, sidecar {4 healthchk}, dnsmasq
+
+# DNS POD https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/  
+    A  . Normal svc, 
+        with ClusterIP resolves to it
+        without ClusterIP resolves to POD IPs
+    SRV . for ? names ports ?
+        Resolves to Domain name & ports 
+        for headless {no ClusterIP}  resolves to each pod {contains domain port}
+    POD  resolves to metadata. but with right metadata it would be {hostname: foo, subdmain: bar, ns = my-namespace, cluster-domain.example}
+       with is foo.bar.namespace.cluster-domain.example
+
+Pods DNS policy :  Default {Local Node }, ClusterFirst {}, ClusterFirstWithHostNet
+
+#Check DNS configuration & Svc is up
+nslookup kubernetes.default
+
+#Check if DNS pod is running, usually two running on master
+kc get pods,svc,deploy -n kube-system -l k8s-app=kube-dns
+
+#Are DNS endpoints exposed
+kc ge ep kube-dns -n kube-system
+
+#Check errors in the pod  {E Error, W Warning, F Failure}
+## Append the logging level
+ kc -n kube-system edit cm coredns  ## Add log before errors 
+##

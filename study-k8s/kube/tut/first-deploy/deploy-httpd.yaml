@@ -1,0 +1,54 @@
+apiVersion: apps/v1  #Define API version
+kind: Deployment  ##Kind of file
+metadata:
+  name:  httpd-deploy   ##Store name of deployment
+  # labels:
+  #   name:  httpd-deploy-metadata  ## ??
+spec:
+  replicas: 3  ## of of replicas
+  selector:
+   matchLabels:
+     app: httpd  ##Label name which is searched is httpd-deploy-metadata # Same as label above
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate  ## update
+  template:
+    metadata:
+      labels:
+        app:  httpd
+    spec:
+      containers:
+      - image:  httpd:latest
+        name:  httpd
+        # resources:
+        #   requests:
+        #     cpu: "20m"
+        #     memory: "55M"
+        # livenessProbe:
+        #   httpGet:
+        #     path: /_status/healthz
+        #     port: 5000
+        #   initialDelaySeconds: 90
+        #   timeoutSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /_status/healthz
+        #     port: 5000
+        #   initialDelaySeconds: 30
+        #   timeoutSeconds: 10
+        # env:
+        # - name:  ENVVARNAME
+        #   value:  ENVVARVALUE       
+        ports:
+        - containerPort:  80  ##expose to containerPort
+          name:  http  ##earlier caused issue  must be no more than 15 characters
+        # volumeMounts:
+        # - mountPath: /data
+        #   name: httpd-deploy ## earlier name caused error volumeMounts[0].name: Not found
+      volumes:
+        - name: data
+          emptyDir: {}
+      restartPolicy: Always
+      # imagePullPolicy: Always  # Not acceptable

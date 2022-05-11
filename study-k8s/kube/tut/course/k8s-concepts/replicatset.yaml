@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+ name: myapp-replicaset
+ labels:
+  app: myapp
+  type: front-end
+spec:
+ template:
+  metadata:
+    name: spec-myapp-replicaset
+    labels:
+      app: myapp
+      type: front-end
+  spec:
+    containers:
+      - image:  nginx
+        name:  nginx-rs
+ replicas: 2
+ selector:
+  matchLabels:
+   type: front-end
+
+
+## To scale further
+# Either
+#   change the YAML and use KC replace -f a.yaml
+# or
+#   kc scale --replicas=6 -f a.yaml
+# or 
+#   kc scale --replicasa=6  replicaset myapp-replicaset
+
+## You still need tempalte definition for the container definition

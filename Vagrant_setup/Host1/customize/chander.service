@@ -1,0 +1,9 @@
+[Unit]
+Description=Chander : Default gateway
+
+[Service]
+ExecStart=/home/vagrant/start_up/chander_boot_k8s.bash
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=network-online.target

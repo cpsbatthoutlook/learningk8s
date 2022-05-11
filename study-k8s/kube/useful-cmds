@@ -1,0 +1,140 @@
+# https://kubernetes.io/docs/reference/kubectl/cheatsheet/#deleting-resources
+kubectl delete pods,services -n NS --all
+
+#Docker vs kubectl  https://kubernetes.io/docs/reference/kubectl/docker-cli-to-kubectl/
+ No difference... refer to kube\tut\dockerhostedApp
+
+##Troubleshooting
+kc get events [-n chander]
+
+
+##Reset Kubeadm  .. https://github.com/kubernetes/kubernetes/issues/39557
+kubeadm reset -f
+rm -rf /var/lib/cni /etc/cni
+rm -rf /var/lib/kubelet ~/.kube
+systemctl stop kubelet
+systemctl stop docker
+ifconfig cni0 down
+ifconfig flannel.1 down
+ifconfig docker0 down
+ip link delete cni0
+ip link delete flannel.1
+
+#replicset 
+#kc scale deploy my-nginx --replicas=0
+OR
+#kc edit deploy chander -n chander
+
+kc run curl --image=radial/busyboxplus:curl -i --tty  #run single instance of image
+
+
+##Wierd and interesting ##
+ curl -i  --connect-timeout 5 localhost:10249/proxyMode  #output iptables
+
+##Administration
+kc drain node2    #drain to prepare
+kc cordon node2   #take if off
+kc uncordon node2 #revive
+
+
+##short-cuts 
+##Bash completion https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-sh
+apt-get -y install bash-completion
+echo "source /usr/share/bash-completion/bash_completion" >> ~/.bashrc
+
+#kc completion bash >> ~/.bashrc
+echo "alias kc=kubectl" >> ~/.bashrc
+kubectl completion bash >/etc/bash_completion.d/kubectl
+echo 'source <(kubectl completion bash)' >> ~/.bashrc
+echo 'complete -F __start_kubectl kc' >>~/.bashrc
+echo "alias ka=kubeadm" >> ~/.bashrc
+kubeadm completion bash >/etc/bash_completion.d/kubeadm
+echo 'source <(kubeadm completion bash)' >> ~/.bashrc
+echo 'complete -F __start_kubeadm ka' >>~/.bashrc
+
+
+##kc get 
+configmaps (aka cm)
+daemonsets (aka ds)
+deployments (aka deploy)
+endpoints (aka ep)
+events (aka ev)
+horizontalpodautoscalers (aka hpa)
+ingresses (aka ing)
+namespaces (aka ns)
+nodes (aka no)
+persistentvolumeclaims (aka pvc)
+persistentvolumes (aka pv)
+pods (aka po)
+replicasets (aka rs)
+replicationcontrollers (aka rc)
+resourcequotas (aka quota)
+serviceaccounts (aka sa)
+services (aka svc)
+
+
+##Create manifest from existing deployment 
+ kc create deploy fancyapp --image nginx -o yaml --dry-run
+
+## Update/Deployment
+kubectl set image deployment sise mhausenblas/simpleservice:0.5.0 ## Update image
+kubectl rollout status deployment sise ## rolling out for RollingUpdate
+kubectl rollout history deployment sise  ## Check the history
+kubectl edit deploy sise ##Change deployment
+kubectl patch deployment sise -p { }    ## specific key
+kubectl rollout undo deployment sise ‐‐to‐revision=2  #roll forward or backwards
+
+
+
+## Vagrant snapshot [pop|push|list]
+ {vg snapshot} [push|pop] master
+ {vg} save master ##Not to be used with push/pop
+ {vg}  restore master --no-start --[no-]provision
+ {vg}  delete master
+## Vagrant Cloud storate
+ vg login  #cps*****ok
+ vg package [master]
+ #uploaded the package.box to https://app.vagrantup.com/cpsbatthoutlook/
+
+
+ ##iptables
+ iptable -vnL --line-numbers {-n numeric output of addresses and ports, List the rules in a[all] chain, Verbose }
+    [INPUT,  FORWARD,   OUTPUT]
+            Chain INPUT (policy ACCEPT)
+            target     prot opt source               destination
+            Chain FORWARD (policy ACCEPT)
+            target     prot opt source               destination
+            Chain OUTPUT (policy ACCEPT)
+            target     prot opt source               destination
+
+#https://www.andreafortuna.org/2019/05/08/iptables-a-simple-cheatsheet/
+iptables [-I  -A  {Insert Append}] [INPUT OUTPUT FORWARD ] [-i iface] [-s src] [-j Jump LOG|DROP|Accept] 
+
+#Drop all
+iptables --policy INPUT DROP
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP\
+
+##List
+# iptables -L INPUT -v   ##List rules with packet count
+# iptables -S INPUT  # rules Specification
+
+##Delete
+iptables -D INPUT 10  #delete by Chain and #
+iptables -D INPUT -m conntrack --ctstate INVALID -j DROP  ## my Specification
+
+##Reset Flush all rules/delete all Chains and accept all
+# iptables -P INPUT ACCEPT
+# iptables -P FORWARD ACCEPT
+# iptables -P OUTPUT ACCEPT
+# iptables -t nat -F
+# iptables -t mangle -F
+# iptables -F
+# iptables -X
+
+##Flush
+iptables -F [INPUT]  #all or single chain
+
+
+
+

@@ -1,0 +1,30 @@
+https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
+
+kc apply -f dnsutils.yaml
+
+#Chk DNS resolution
+kubectl exec -ti dnsutils -- nslookup kubernetes.default
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   kubernetes.default.svc.cluster.local
+Address: 10.96.0.1
+
+##Check if above cmd fails
+kubectl exec dnsutils cat /etc/resolv.conf
+
+nameserver 10.96.0.10
+search default.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+
+
+#Check if the DNS pod is running
+#Check for any DNS Pod related errors
+  for p in $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name); do kubectl logs --namespace=kube-system $p; done
+
+
+
+#Is DNS service up?
+#Is DNS EP exposed?
+#Are DNS queries being received/processed?  
+  kubectl -n kube-system edit configmap coredns  ##add log above errors

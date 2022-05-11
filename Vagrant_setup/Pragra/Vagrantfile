@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+sudo mv hosts /etc/hosts
+chmod 0600 /home/vagrant/.ssh/id_rsa
+usermod -a -G vagrant ubuntu
+cp -Rvf /home/vagrant/.ssh /home/ubuntu
+chown -Rvf ubuntu /home/ubuntu
+apt-get -y update
+apt-get -y install python-minimal python-apt ansible
+apt-get -y install screen curl wget sysstat tcpdump
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.box = "ubuntu/xenial64"
+
+  config.vm.define "master" do |kube_master|
+    kube_master.ssh.insert_key = false
+    kube_master.vm.hostname = "master"
+    kube_master.vm.network "public_network", ip: "192.168.0.177"
+    kube_master.vm.synced_folder "./kube", "/kube"
+     kube_master.vm.provider :virtualbox do |vb|
+       vb.customize ["modifyvm", :id, "--memory", "4096"]
+       vb.customize ["modifyvm", :id, "--cpus", "2"]   
+    end  
+    kube_master.vm.provision "file", source: "hosts", destination: "hosts"
+    kube_master.vm.provision "file", source: "insecure_private_key", destination: "/home/vagrant/.ssh/id_rsa"
+    kube_master.vm.provision "shell", inline: $script
+
+  end
+  config.vm.define "node1" do |node1|
+    node1.vm.hostname = "node1"
+    node1.vm.network "public_network",  ip: "192.168.0.178"
+    node1.vm.synced_folder "./kube", "/kube"
+     config.vm.provider :virtualbox do |vb|
+       vb.customize ["modifyvm", :id, "--memory", "3096"]
+       vb.customize ["modifyvm", :id, "--cpus", "2"]
+    end  
+    node1.vm.provision "file", source: "hosts", destination: "hosts"
+    node1.vm.provision "file", source: "insecure_private_key", destination: "/home/vagrant/.ssh/id_rsa"
+    node1.vm.provision "shell", inline: $script
+  end
+  config.vm.define "node2" do |node2|
+    node2.vm.hostname = "node2"
+    node2.vm.network "public_network", ip: "192.168.0.179"
+    node2.vm.synced_folder "./kube", "/kube"
+     config.vm.provider :virtualbox do |vb|
+       vb.customize ["modifyvm", :id, "--memory", "3096"]
+       vb.customize ["modifyvm", :id, "--cpus", "2"]
+      end  
+    node2.vm.provision "file", source: "hosts", destination: "hosts"
+    node2.vm.provision "file", source: "insecure_private_key", destination: "/home/vagrant/.ssh/id_rsa"
+    node2.vm.provision "shell", inline: $script  
+  end
+end

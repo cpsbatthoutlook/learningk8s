@@ -1,0 +1,85 @@
+SCHEDULER SERVICE is responsible for deploying pods to various WORKER nodes including master in certain cases.
+    deployment could be controlled through TAINTS/TOLERATION, nodeSelector/nodeAffinity, ResourceRequirements/LIMITS
+    Type of pod deployements including nodeName & STATIC (outside scheduler control), DaemonSet (all nodes [lately use restriction]), Regular
+
+
+
+Scheduler look for "nodeName" property within pod definition file to decide if POD need deployment. 
+
+One can assign Node while declaring definition by assigning "nodeName: Node1" to the spec:
+OR
+by pod-bind-definition to re-allocate the pods. 
+
+
+"LABELS" and "SELECTORS"  : https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    add properties to the object to categorized
+    used by mutiple concepts like ReplicaSets, {at 2 places, @replicaset, and @pods}, Service, 
+
+    ANNOTATIONS:  are used for other comments with details
+
+
+TAINTS and TOLERATION: {EXCLUSIVE} pod to node (including MASTER nodes) relationship
+    DOESN't prevent pod to go to a different node
+    https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    Used for : Dedicated nodes, Special HW needs
+    Avoid use taint, Exception tolerant || person - node,   bugs - taint
+    Built in taints: not-ready, unreachable, out of disk, memory, unschedulable, etc
+    
+    root@master:/tmp# kc describe node master | grep -i taint
+    Taints:             node-role.kubernetes.io/master:NoSchedule
+    Removing :  kc taint node master node-role.kubernetes.io/master:NoSchedule-
+
+NODE SELECTORS: helps distribute right load to correct node 
+    Option1: nodeName in YAML for particular node
+    Option2: nodeSelector in YAML for categorize
+
+    Label nodes before hand, kc label nodes node01 size=Large
+    Limitation : can not do AND, OR, NOT
+    ?? How to delete node label ??
+
+NODE AFFINITY: {INCLUSIVE} Node Selector but with AND,OR,NOT
+    Uses Two modes @SCHEDULER & @EXECUTION with prefereredDuring vs. requireDuring
+    uses affinity, nodeAffinity
+    use case : have pods co-located in the same node, or don't co-locate
+    IF NO MATCH, run by requireDuring....  and prefereredDuring  [ for Scheduling and Execution ] for POD behaviour @Scheduling and @Executing
+
+    === Best approach to use "TAINTS" to avoid inclusion and use AFFINTIY to attract pods  ===
+
+RESOURCE REQUIREMENTS and LIMITS:  CPU, Memory, Disk  {by default .5CPU, 256MB RAM, }
+    https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/
+    change the POD definition "resources"
+
+    CPU Resource: 0.1 CPU = 1m CPU = 1 Hyerthread, 1vCPU AWS, 1 Core GCP/AWS
+    Mem resource : 256 Mi (MB), or G is GBytes, Gi (GibiByts  1024MBi
+
+    TO CHANGE existing PODS, you can either export the running POD configuratoin : kc get pod pod1 -o yaml 
+        and edit, delete POD and recreate
+      == OR  change the deployment with addting resources. ==
+
+DAEMONSET:  Use case  - proxy and Network, have a pod created in every node
+    v1.12, can use NODE AFFINITY and default SCHEDULER
+
+STATIC PODS: in absense of Control Plane , you can still setup pod in a node using only Kubelet
+    have definition file in the  node: /etc/kubernetes/manifests 
+        this is definted in the kubelet service as --pod-manifest-path=
+    can not have deployment, svcs, rs, etc. because KubeLet only understand pods
+
+    Another way to set is to replace kubelet argument with --config=kubeconfig.yaml & hv this yaml file have staticPodPath variable
+    CANNOT be deleted by kubectl or API servers, 
+    HAVE NodeName appended to Pod name
+
+    USE CASE: to run certain jobs on specific node and self-managed.
+
+
+CUSTOM SCHEDULER: in case you want your own algorithm to implement for certain services. 
+    https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+    Modify the existing kube-scheduler manifest file and change "--scheduler-name=<diff>" &  [disable leader elect option if no HA] && set "--lock-object-name"
+    When specifying POD, add in "spec" schedulerName=
+    run kc events to see if pod is delployed by scheduler
+
+
+
+
+
+
+

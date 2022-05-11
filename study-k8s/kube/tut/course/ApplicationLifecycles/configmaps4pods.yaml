@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: chander
+data:
+  special.how: very
+  apecial.how: veryA
+  bpecial.how: veryB
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: chander
+data:
+  log_level: INFO
+  env_level: INFO-E
+  tnv_level: INFO-T

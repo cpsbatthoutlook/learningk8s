@@ -1,0 +1,16 @@
+---
+- name: Join cluster
+  hosts: nodes
+  tasks:
+    - service: name=docker state=started enabled=yes
+    - sysctl: name=net.ipv4.ip_forward value=1 state=present reload=yes sysctl_set=yes
+    - name : packages
+      apt: name={{ item }}  state=present
+      with_items:
+       - kubelet
+       - kubeadm
+       - kubectl
+    # - service: name=ntp state=started enabled=yes
+    - service: name=kubelet state=started enabled=yes
+    - script : /tmp/join.sh executables=/bin/bash
+...

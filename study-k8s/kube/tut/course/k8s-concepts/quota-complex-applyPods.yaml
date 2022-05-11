@@ -1,0 +1,21 @@
+## Not working
+
+#https://kubernetes.io/docs/concepts/policy/resource-quotas/#enabling-resource-quota
+apiVersion: v1
+kind: Pod
+metadata:
+  name: high-priority
+spec:
+  containers:
+  - name: high-priority
+    image: ubuntu
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo hello; sleep 10;done"]
+    resources:
+      requests:
+        memory: "10Ki"
+        cpu: "50m"
+      limits:
+        memory: "10Ki"
+        cpu: "50m"
+  priorityClassName: high

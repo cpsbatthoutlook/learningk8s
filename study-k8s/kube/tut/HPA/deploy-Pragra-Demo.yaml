@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pragra-demo-hpa
+  name: pragra-demo-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: pragra-demo-hpa
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: pragra-demo-hpa
+    spec:
+      containers:
+      - image: ankit199112/pragra-demo-hpa:latest
+      #- image: pragra-demo-hpa:latest
+        name: pragra-demo-hpa
+        resources: #https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container
+            requests:
+              memory: "16Mi"
+              cpu: "50m"
+            limits:
+              memory: "200Mi"
+              cpu: "100m"
+...

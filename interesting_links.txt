@@ -1,0 +1,23 @@
+Vagrant box
+https://download.virtualbox.org/virtualbox/6.1.2/VirtualBox-6.1-6.1.2_135662_el7-1.x86_64.rpm
+
+K8s built
+https://michele.sciabarra.com/2018/02/12/devops/Kubernetes-with-KubeAdm-Ansible-Vagrant/
+
+https://www.aquasec.com/wiki/display/containers/Kubernetes+Architecture+101
+
+Tutorial
+https://www.aquasec.com/wiki/display/containers/70+Best+Kubernetes+Tutorials#id-70BestKubernetesTutorials-vagrant
+
+https://www.aquasec.com/wiki/display/containers/70+Best+Kubernetes+Tutorials#id-70BestKubernetesTutorials-network
+
+https://dzone.com/articles/how-to-understand-and-setup-kubernetes-networking
+
+https://seanmcgary.com/posts/how-to-deploy-a-nodejs-app-to-kubernetes/ 
+
+Troubleshooting:
+#NodePort External IP issue  https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
+
+##403
+https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/ 
+

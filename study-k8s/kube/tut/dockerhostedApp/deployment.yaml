@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+#Run  kubectl create -f clientx/k8s-hugo/deployment.yaml
+#Check  kc get deploy -n chander; get nodes -o wide
+kind: Deployment
+metadata:
+  name: chander
+  namespace: chander
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chander
+  template:
+    metadata:
+      labels:
+        app: chander
+    spec:
+      containers:
+      - name: chander
+        image: tobilg/mini-webserver:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+      

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Binding
+metadata:
+  labels:
+    run: pod-schedule
+  name: pod-schedule
+target:
+ apiVersion: v1
+ kind: Node
+ name: node1
+
+#https://kubernetes.io/blog/2017/03/advanced-scheduling-in-kubernetes/
+#Convert JSON to YAML : python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < pod-binding.yaml > pod-binding.json
+
+##Failed
+# cat pod-binding.json |  curl --header "Content-Type:application/json" --request POST -k --data -  ${APISERVER}/api/v1/namespaes/default/pods/pod-schedule/binding
+

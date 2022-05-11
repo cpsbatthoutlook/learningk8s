@@ -1,0 +1,24 @@
+---
+#https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pragra-demo-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pragra-demo-hpa
+  minReplicas: 4
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 40
+
+  # metrics:
+  # - type: Resource
+  #   resource:
+  #     name: cpu
+  #     target:
+  #       type: Utilization
+  #       averageUtilization: 50
+...

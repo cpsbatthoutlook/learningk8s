@@ -1,0 +1,81 @@
+https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/ 
+
+kc exec my-nginx-75897978cd-gdrvd -- printenv
+                PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+                HOSTNAME=my-nginx-75897978cd-gdrvd
+                KUBERNETES_PORT_443_TCP_PORT=443
+                KUBERNETES_PORT=tcp://10.96.0.1:443
+                KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+                KUBERNETES_SERVICE_PORT=443
+                KUBERNETES_SERVICE_HOST=10.96.0.1
+                KUBERNETES_SERVICE_PORT_HTTPS=443
+                KUBE_OPS_VIEW_REDIS_PORT_6379_TCP_ADDR=10.106.31.42
+                HELLO_WORLD_PORT_8080_TCP=tcp://10.97.188.113:8080
+                KUBERNETES_PORT_443_TCP_PROTO=tcp
+                KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+                KUBE_OPS_VIEW_REDIS_PORT_6379_TCP_PORT=6379
+                KUBE_OPS_VIEW_PORT_80_TCP=tcp://10.105.204.138:80
+                HELLO_WORLD_PORT_8080_TCP_PROTO=tcp
+                HELLO_WORLD_PORT_8080_TCP_ADDR=10.97.188.113
+                HELLO_WORLD_SERVICE_PORT=8080
+                NGINX_VERSION=1.17.8
+                NJS_VERSION=0.3.8
+                PKG_RELEASE=1~buster
+                HOME=/root
+
+kc scale deploy my-nginx --replicas=0
+
+kc run curl --image=radial/busyboxplus:curl -i --tty  #run single instance of image
+
+
+#NodePort External IP issue  https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
+kubectl run source-ip-app --image=k8s.gcr.io/echoserver:1.4
+# run on node/pod command curl localhost:10249/proxyMode
+kc expose deployment source-ip-app --name=clusterip --port=80 --target-port=8080
+# run 
+kc run busybox -it --image=busybox --restart=Never --rm
+
+
+
+
+##networking
+ kc -n kube-system get cm kubeadm-config -o yaml
+            apiVersion: v1
+            data:
+            ClusterConfiguration: |
+                apiServer:
+                extraArgs:
+                    authorization-mode: Node,RBAC
+                timeoutForControlPlane: 4m0s
+                apiVersion: kubeadm.k8s.io/v1beta2
+                certificatesDir: /etc/kubernetes/pki
+                clusterName: kubernetes
+                controllerManager: {}
+                dns:
+                type: CoreDNS
+                etcd:
+                local:
+                    dataDir: /var/lib/etcd
+                imageRepository: k8s.gcr.io
+                kind: ClusterConfiguration
+                kubernetesVersion: v1.17.2
+                networking:
+                dnsDomain: cluster.local
+                podSubnet: 10.244.0.0/16
+                serviceSubnet: 10.96.0.0/12
+                scheduler: {}
+            ClusterStatus: |
+                apiEndpoints:
+                master:
+                    advertiseAddress: 192.168.0.181
+                    bindPort: 6443
+                apiVersion: kubeadm.k8s.io/v1beta2
+                kind: ClusterStatus
+            kind: ConfigMap
+            metadata:
+            creationTimestamp: "2020-02-04T23:45:25Z"
+            name: kubeadm-config
+            namespace: kube-system
+            resourceVersion: "145"
+            selfLink: /api/v1/namespaces/kube-system/configmaps/kubeadm-config
+            uid: f526cad7-9034-43f3-a864-8f2fd8b814a6

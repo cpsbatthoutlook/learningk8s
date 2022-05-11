@@ -1,0 +1,16 @@
+apiVersion: v1
+#Run kubectl create -f clientx/k8s-hugo/service-hugo.yaml
+#Check kubectl get services -n chander
+kind: Service
+metadata:
+  name: chander
+  namespace: chander
+spec:
+  selector:
+    app: chander
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: ClusterIP
+  #type: NodePort
