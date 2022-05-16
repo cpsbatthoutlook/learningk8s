@@ -1,0 +1,9 @@
+[master]
+master  ansible_user=vagrant
+[node]
+node1  ansible_user=vagrant
+node2  ansible_user=vagrant
+node3  ansible_user=vagrant
+jnode3  ansible_user=vagrant
+jnode5  ansible_user=vagrant
+jnode4  ansible_user=vagrant

@@ -1,0 +1,10 @@
+---
+- hosts: master
+  become: True
+  tasks:
+   - name: Install all packages
+     apt:
+       pkg: 
+       - nfs-kernel-server
+       - samba
+       - ansible

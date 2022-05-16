@@ -15,3 +15,13 @@ vagrant plugin install vagrant-disksize
 https://github.com/LocusInnovations/k8s-vagrant-virtualbox
 cd k8s-vagrant-virtualbox
 vagrant up
+
+
+## NFS Server
+apt-get -y install nfs-server nfs-commons
+systemctl enable nfs-server
+systemctl start nfs-server
+  mkdir /k8s_share/vol{0..5} && chmod -R 777 /k8s_share 
+edit /etc/exportfs ## /k8s_share       192.168.0.0/16(rw)
+exportfs -a
+showmount -e 

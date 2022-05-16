@@ -89,7 +89,7 @@ sed -i '/swap/d' /etc/fstab
 # Install kubeadm, kubectl and kubelet
 export DEBIAN_FRONTEND=noninteractive
 apt-get -qq install ebtables ethtool
-apt-get -qq install jq xmlstarlet tmux git net-tools 
+apt-get -qq install jq xmlstarlet tmux git net-tools nfs-common nfs-kernel-server ## NFS Server
 apt-get -qq update
 apt-get -qq install -y docker.io apt-transport-https curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -

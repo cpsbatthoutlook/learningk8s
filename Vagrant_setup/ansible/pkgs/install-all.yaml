@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  tasks:
+   - name: Install all packages
+     apt:
+       pkg: 
+       - jq
+       - xmlstarlet
+       - tmux
+       - git
+       - net-tools
+       #- nfs-utils
+       - youtube-dl
+       - nfs-common

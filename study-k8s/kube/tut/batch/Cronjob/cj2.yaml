@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cj2
+  namespace: chander
+spec:
+  schedule: "* * * * *"
+  suspend: false
+  concurrencyPolicy: Allow
+  timeZone: America/New_York
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      name: cj2
+    spec:
+      template:
+        spec:
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            -  date; echo Hello from cj2 From Kubernetes
+            image: busybox:1.28
+            imagePullPolicy: IfNotPresent
+            name: cj2
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30

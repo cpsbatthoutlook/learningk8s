@@ -1,0 +1,3 @@
+Bare Pod {Naked} :  Cons: if node dies, Pod dies. Good for the testing.
+RS :   Ensure HA 
+Job--- creates --- > POD ---- creates ---> Another pods..  : Could be complex but have merits:  https://github.com/kubernetes/examples/blob/master/staging/spark/README.md
