@@ -141,6 +141,7 @@ sudo echo "alias k=/usr/bin/kubectl" >> /root/.bash_profile
 
 # Install the etcd client
 sudo apt install etcd-client
+sudo apt -y install ansible
 
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet

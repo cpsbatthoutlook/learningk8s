@@ -1,0 +1,5 @@
+.vagrant
+.data
+.kube
+apps
+.ssh
