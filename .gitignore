@@ -1,4 +1,6 @@
 **/*.log
+**/*.swp
+**/*.temp
 **/.vagrant
 **/.git
 **/id_rsa

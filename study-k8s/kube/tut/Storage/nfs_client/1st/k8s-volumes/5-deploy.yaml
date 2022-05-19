@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+  namespace: pv-demo
+  #url: https://github.com/kubernetes-retired/external-storage/tree/master/nfs-client/deploy
+  labels:
+    app: nfs-client-provisioner
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: quay.io/external_storage/nfs-client-provisioner:latest
+          volumeMounts:
+            - name: chander-nfs-storage
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: host/k8s_share
+            - name: NFS_SERVER
+              value: 192.168.0.121
+            - name: NFS_PATH
+              value: /k8s_share/vol0
+      volumes:
+        - name: chander-nfs-storage
+          nfs:
+            server: 192.168.0.121
+            path: /k8s_share/vol0

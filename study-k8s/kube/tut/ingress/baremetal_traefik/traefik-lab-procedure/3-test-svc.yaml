@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        #imagePullPolicy: Always
+        name: nginx
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: traefik-nginx
+  name: nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    name: svc-name
+    targetPort: 80
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: traefik-nginx
+  name: nginx
+  annotations:
+   kubernetes.io/ingress.class: traefik
+   #traefik.ingress.kubernetes.io/auth-type: "basic"
+   #traefik.ingress.kubernetes.io/auth-secret: "mysecret"
+   #Didn'tWork#traefik.ingress.kubernetes.io/rewrite-target: /t1
+  #url: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  #url1: https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/#annotations
+  #url2: https://doc.traefik.io/traefik/middlewares/http/stripprefix/
+spec:
+  rules:
+  #- host: 0.0.0.0
+  - http: 
+     paths: 
+     - pathType: Prefix
+       path:  /
+       backend: 
+        service:
+          #name:  svc-name
+          name:  nginx
+          port:  
+            number:  80

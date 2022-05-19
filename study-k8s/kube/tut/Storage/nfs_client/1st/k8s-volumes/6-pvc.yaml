@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv1-chander-nfs-storage
+  namespace: pv-demo
+spec:
+  storageClassName: chander-nfs-storage
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: host
+    path: "/k8s_share/vol0"
+  #mountOptions:
+    #- nfsvers=4.2
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc1-chander-nfs-storage
+  namespace: pv-demo
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "chander-nfs-storage"
+spec:
+  storageClassName: chander-nfs-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi

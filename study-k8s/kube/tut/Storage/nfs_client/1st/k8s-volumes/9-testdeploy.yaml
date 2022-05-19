@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-deploy-test
+  name: nfs-deploy-test
+  namespace: pv-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nfs-deploy-test
+  template:
+    metadata:
+      labels:
+        app: nfs-deploy-test
+    spec:
+      containers:
+      - image: gcr.io/google_containers/busybox:1.24
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        command: 
+        - "/bin/sh"
+        - "-c"
+        - "touch /mnt/`date +%H%M%S`;ls -l /mnt; echo Success;sleep 15;"
+        volumeMounts: 
+        - mountPath: /mnt
+          name: pod-pvc1-chander-nfs-storage
+          readOnly: false
+        name: busybox
+      restartPolicy: Always
+      volumes:
+      - name: pod-pvc1-chander-nfs-storage
+        persistentVolumeClaim:
+          claimName: pvc1-chander-nfs-storage

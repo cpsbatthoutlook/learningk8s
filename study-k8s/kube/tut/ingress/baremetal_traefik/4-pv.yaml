@@ -1,0 +1,40 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: chander-nfs-storage
+#provisioner: 192.168.0.121:/k8s_share
+provisioner: host/k8s_share
+parameters:
+  server: 192.168.0.121
+  path: /k8s_share
+  readOnly: "false"
+  #archiveOnDelete: "false"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv1-chander-nfs-storage
+spec:
+  storageClassName: chander-nfs-storage
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: host
+    path: "/k8s_share/vol1"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc1-chander-nfs-storage
+  namespace: traefik
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: chander-nfs-storage
+---

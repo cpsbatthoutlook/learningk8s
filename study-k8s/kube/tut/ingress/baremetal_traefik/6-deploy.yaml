@@ -1,0 +1,59 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: traefik
+  namespace: traefik
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: pvc1-chander-nfs-storage
+      containers:
+        - name: traefik
+          image: traefik:v2.2
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+            - name: admin
+              containerPort: 8080
+            - name: metrics
+              containerPort: 8082
+            #- name: gitlab-ssh
+            #  containerPort: 22
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /acme
+              subPath: ""
+          args:
+          - --api.insecure=true
+          - --api.dashboard=true
+          - --accesslog
+          - --metrics.prometheus=true
+          - --metrics.prometheus.addEntryPointsLabels=true
+          - --metrics.prometheus.addServicesLabels=true
+          - --entryPoints.metrics.address=:8082
+          - --metrics.prometheus.entryPoint=metrics
+          - --entrypoints.web.Address=:80
+          - --entrypoints.websecure.Address=:443
+          - --entrypoints.websecure.http.tls=true
+          - --entrypoints.plex-pms.Address=:32400
+          - --entrypoints.gitlab-ssh.Address=:22/tcp
+          - --log.level=DEBUG
+          - --ping
+          - --providers.kubernetescrd=true
+          - --providers.kubernetesIngress=true

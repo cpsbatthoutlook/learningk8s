@@ -6,6 +6,7 @@
      apt:
        pkg: 
        - jq
+       - arping
        - xmlstarlet
        - tmux
        - git
@@ -13,3 +14,4 @@
        #- nfs-utils
        - youtube-dl
        - nfs-common
+       - traceroute
