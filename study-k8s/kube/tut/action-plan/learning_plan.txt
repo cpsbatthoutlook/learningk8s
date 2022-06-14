@@ -1,0 +1,17 @@
+
+Action Plan (k8s)
+
+Kind	Minikube	Kubectl	Anthos
+----
+#Deploy single app + RS + Nodeport 
+Deploy single app + RS + Nodeport + PVC (local)
+Deploy single app + RS + Nodeport  + PVC (Storage Class) + Taint/Constrants
+Deploy CronJob + PVC (Stoarage class) 
+Deploy Job + PVC (Stoarage class) 
+Deploy single app + RS + Nodeport + PVC (local) + HorizontalPodAutoScaler
+----
+Deploy above with <Metallb> + <Traefik>  + App
+Deploy above with <Metallb> + <Traefik>  + App1/ App2
+----
+Cert-Manager
+External DNS

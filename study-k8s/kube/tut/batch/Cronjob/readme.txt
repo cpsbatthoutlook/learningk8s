@@ -6,4 +6,4 @@ https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
 
 
 
-kcc create cronjob cj1 --image=busybox:1.28 --schedule=0/5 * * * * -- /bi/nsh -c date; echo Hello From Kubernetes
+kcc create cronjob cj1 --image=busybox:1.28 --schedule=0/5 * * * * -- /bin/sh -c date; echo Hello From Kubernetes

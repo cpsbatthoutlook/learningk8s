@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: first-app
+  namespace: chander
+spec:
+  selector:
+    matchLabels:
+      app: first-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: first-app
+    spec:
+      volumes:
+      - name: deploy-volume
+        persistentVolumeClaim:
+           claimName: pvc-first-app
+        spec:
+          resources:
+            requests:
+              storage: {2:<Size>}
+          volumeMode: Filesystem
+          accessModes:
+            - ReadWriteOnce
+        
+      containers:
+      - name: first-app
+        image: nginx:stable-alpine
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-first-app
+  namespace: chander
+spec:
+  type: ClusterIP
+  selector:
+    app: first-app
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-first-app-np
+  namespace: chander
+spec:
+  type: NodePort
+  selector:
+    app: first-app
+  ports:
+  - port: 80
+    targetPort: 8080
+---

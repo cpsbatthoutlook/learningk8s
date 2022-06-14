@@ -1,0 +1,23 @@
+##https://github.com/kubernetes/kompose
+# https://kubernetes.io/docs/reference/tools/
+
+
+##https://github.com/kubernetes/kompose/blob/master/docs/installation.md#ubuntudebian
+wget https://github.com/kubernetes/kompose/releases/download/v1.26.1/kompose_1.26.1_amd64.deb # Replace 1.26.1 with latest tag
+sudo apt install ./kompose_1.26.1_amd64.deb
+
+
+##Shell Autocomplete
+# Bash (add to .bashrc for persistence)
+source <(kompose completion bash)
+
+## QuickStart
+https://github.com/kubernetes/kompose/blob/master/docs/getting-started.md
+## Go to Docker-compose.yaml
+$ kompose convert                           
+INFO Kubernetes file "frontend-service.yaml" created         
+INFO Kubernetes file "redis-master-service.yaml" created     
+INFO Kubernetes file "redis-slave-service.yaml" created      
+INFO Kubernetes file "frontend-deployment.yaml" created      
+INFO Kubernetes file "redis-master-deployment.yaml" created  
+INFO Kubernetes file "redis-slave-deployment.yaml" created 
