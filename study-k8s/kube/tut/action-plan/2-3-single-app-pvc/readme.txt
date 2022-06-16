@@ -12,7 +12,15 @@ https://www.alibabacloud.com/blog/kubernetes-volume-basics-emptydir-and-persiste
 2 types of volumes:
 Ephemeral Volumes — These are tightly coupled with the Node’s lifetime (e.g., emptyDir or hostPath). They are deleted if the Node goes down.
 Persistent Volumes — These are meant for long-term storage and are independent of the Pod/Node life-cycle. These can be cloud volumes (like gcePersistentDisk, awsElasticBlockStore, azureFile or azureDisk, etc.), NFS (Network File Systems), or Persistent Volume Claims (a series of abstraction to connect to the underlying cloud provided storage volumes)
+ ----
+  POD > PVC > PV > StorageClass > [Actual Storage]
+  ----
+     ACCESS MODE: ReadWriteOnce {when only 1 Node had to write}, ReadOnlyMany  {Many nodes Read}, ReadWriteMany  {RW by many nodes}
+     Volume Modes:  [same between PV and PVC ] block, fs
+     SELECTOR: labels selector to chose the type of storage
+     CLASS: Particular Storage CLASS
 
+    ACCESS MODE: ReadWriteOnce
 
 ## 
 ## From: https://kubernetes.io/docs/concepts/storage/volumes/#local

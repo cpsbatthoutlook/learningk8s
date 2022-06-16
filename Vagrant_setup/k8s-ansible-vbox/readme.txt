@@ -1,0 +1,18 @@
+https://github.com/itwonderlab/ansible-vbox-vagrant-kubernetes.git
+
+https://itnext.io/practical-example-of-using-k8s-pv-pvc-with-pods-5471b91d2477
+
+https://www.itwonderlab.com/en/ansible-kubernetes-vagrant-tutorial/
+
+
+## Prerequisites
+A Linux workstation (I am using Ubuntu 20.10) with At least 8 GB of RAM and 15 GB of free hard disk space for the virtual machines.
+lsb_release -a
+Vagrant 2.2.16
+wget https://releases.hashicorp.com/vagrant/2.2.16/vagrant_2.2.16_x86_64.deb
+sudo apt install ./vagrant_2.2.16_x86_64.deb
+VirtualBox 6.1.22 or above
+sudo apt install virtualbox
+Ansible 2.9.9
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible

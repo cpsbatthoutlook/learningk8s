@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 300Ki
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  # storageClassName: chander-nfs
+  mountOptions:
+    - hard
+    # - nfsvers=4.1
+  nfs:
+    path: /k8s_share/vol2
+    server: 192.168.0.121
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+  namespace: chander
+spec:
+  resources:
+    requests:
+      storage: 100Ki
+  # storageClassName: chander-nfs
+  # selector:
+  #  matchLabels:
+  #    release: "stable"
+  #  matchExpressions:
+  #  - {key: environment, operator: In, values: [dev]}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: chander
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: gcr.io/google_containers/busybox:1.24
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+        - mountPath: /learningk8s
+          name: nfs-mount        
+        # - mountPath: /learningk8s
+        #   name: mydir
+        # - mountPath: /var/local/aaa/1.txt
+        #   name: myfile
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "touch /learningk8s/test_`date +%H%M%S`;ls -l /learningk8s ; echo Success;sleep 15;"
+      - name: test-nginx-hostpath
+        image: nginx
+        volumeMounts:
+        - mountPath: /cache
+          name: nfs-mount        
+        # - mountPath: /learningk8s
+        #   name: mydir
+        # - mountPath: /var/local/aaa/1.txt
+        #   name: myfile
+      volumes:
+      - name: nfs-mount
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+      - name: cache-volume
+        emptyDir: {}
+      # - name: mydir
+      #   hostPath:
+      #     # Ensure the file directory is created.
+      #     path: /vagrant/data/learningk8s
+      #     type: DirectoryOrCreate
+      # - name: myfile
+      #   hostPath:
+      #     path: /vagrant/customize/chander.service
+      #     type: FileOrCreate
+
+---

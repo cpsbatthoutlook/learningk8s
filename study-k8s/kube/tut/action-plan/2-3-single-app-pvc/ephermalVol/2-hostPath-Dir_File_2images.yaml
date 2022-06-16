@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: chander
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: gcr.io/google_containers/busybox:1.24
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+        - mountPath: /learningk8s
+          name: mydir
+        - mountPath: /var/local/aaa/1.txt
+          name: myfile
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "touch /learningk8s/test_`date +%H%M%S`;ls -l /learningk8s ;cat /var/local/aaa/1.txt; echo Success;sleep 15;"
+      - name: test-nginx-hostpath
+        image: nginx
+        volumeMounts:
+        - mountPath: /learningk8s
+          name: mydir
+        - mountPath: /var/local/aaa/1.txt
+          name: myfile
+      volumes:
+      - name: mydir
+        hostPath:
+          # Ensure the file directory is created.
+          path: /vagrant/data/learningk8s
+          type: DirectoryOrCreate
+      - name: myfile
+        hostPath:
+          path: /vagrant/customize/chander.service
+          type: FileOrCreate

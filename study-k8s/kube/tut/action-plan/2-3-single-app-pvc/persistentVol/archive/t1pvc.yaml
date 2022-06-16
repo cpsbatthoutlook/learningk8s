@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+  namespace: chander
+spec:
+  resources:
+    requests:
+      storage: 100Ki
+  storageClassName: ""
+  #selector:
+  # matchLabels:
+  #   release: "stable"
+  #  matchExpressions:
+  #  - {key: environment, operator: In, values: [dev]}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

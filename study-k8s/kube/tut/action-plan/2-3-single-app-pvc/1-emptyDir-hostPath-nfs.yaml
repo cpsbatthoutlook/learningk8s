@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 300Ki
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  # storageClassName: chander-nfs
+  mountOptions:
+    - hard
+    # - nfsvers=4.1
+  nfs:
+    path: /k8s_share/vol2
+    server: 192.168.0.121
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+  namespace: chander
+spec:
+  resources:
+    requests:
+      storage: 100Ki
+  # storageClassName: chander-nfs
+  # selector:
+  #  matchLabels:
+  #    release: "stable"
+  #  matchExpressions:
+  #  - {key: environment, operator: In, values: [dev]}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: chander
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: gcr.io/google_containers/busybox:1.24
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+        - mountPath: /nfs-learningk8s
+          name: nfs-mount        
+        - mountPath: /hostpath_learningk8s
+          name: hostpath-volume
+        - mountPath: /var/local/aaa/1.txt
+          name: hostpathfile-volume
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "touch /nfs-learningk8s/test_`date +%H%M%S`;ls -l /nfs-learningk8s /hostpath_learningk8s /var/local/aaa/1.txt  ; echo Success;sleep 30;"
+      - name: test-nginx-hostpath
+        image: nginx
+        volumeMounts:
+        - mountPath: /nfs-learningk8s
+          name: nfs-mount        
+        - mountPath: /hostpath_learningk8s
+          name: hostpath-volume
+        - mountPath: /var/local/aaa/1.txt
+          name: hostpathfile-volume
+      volumes:
+      - name: nfs-mount
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+      - name: emptydir-volume
+        emptyDir: {}
+      - name: hostpath-volume
+        hostPath:
+          # Ensure the file directory is created.
+          path: /vagrant/data/learningk8s
+          type: DirectoryOrCreate
+      - name: hostpathfile-volume
+        hostPath:
+          path: /vagrant/customize/chander.service
+          type: FileOrCreate
+
+---
