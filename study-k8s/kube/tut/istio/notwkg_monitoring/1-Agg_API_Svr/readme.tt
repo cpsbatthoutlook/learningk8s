@@ -1,0 +1,18 @@
+Aggregation layer enables addtional APIs which are not part of core yet free up resources for K8s API svc.  e.g. 1000 nodes, 10 metrics for 10 pods every minute  is 1000*10*100 / 60  ~ 16500 calls every sec
+
+
+Different than CRD : there is another server involved. High level flow: 
+* K8sAPI authen/authr user and rights for API path
+* proxy the request to XtApi
+* XtApi authn/authr request from orig user
+* execute
+Authen[ priv key | signed client key | cert of CA signed by client cert file  | valid CN with signed client cert ]
+
+
+
+Reference : https://github.com/kubernetes-sigs/metrics-server
+   https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
+
+## Src code : https://github.com/kubernetes/sample-apiserver/blob/master/README.md
+:
+     

@@ -1,0 +1,60 @@
+https://www.tutorialworks.com/helm-cheatsheet/
+
+# list helm chart (local)
+helm ls --all [ --deleted ] 
+
+#Inspect the variables in a chart
+	helm inspect values stable/mysql
+#Install a Helm chart
+  helm install --name foo stable/mysql
+  helm install --name path/to/foo
+  helm install --name foo bar-1.2.3.tgz
+  helm install --name foo https://example.com/charts/bar-1.2.3.tgz
+  helm install -f ./my-extra-values.yml ./mychart
+  helm install --set key1=val1,key2=val2 [name] [chart]
+
+#Install a Helm chart and override variables
+  helm install --name foo --values config.yaml --timeout 300 --wait stable/mysql
+#Show status of Helm chart being installed
+  helm status foo
+#Delete a Helm chart
+  helm delete --purge foo
+
+
+#Create a blank chart
+  helm create foo
+#Lint the chart
+  helm lint foo
+#Package the chart into foo.tgz
+  helm package foo
+#Install chart dependencies
+  helm dependency update
+
+#Template tbd
+  helm template [name]  [chart]
+
+
+##Helm folder structure
+  wordpress/
+    Chart.yaml          # A YAML file containing information about the chart
+    LICENSE             # OPTIONAL: A plain text file containing the license for the chart
+    README.md           # OPTIONAL: A human-readable README file
+    requirements.yaml   # OPTIONAL: A YAML file listing dependencies for the chart
+    values.yaml         # The default configuration values for this chart
+    charts/             # A directory containing any charts upon which this chart depends.
+    templates/          # A directory of templates that, when combined with values, will generate valid Kubernetes manifest files.
+    templates/NOTES.txt # OPTIONAL: A plain text file containing short usage notes
+
+
+#Show chart details
+  helm show chart repo/chart-name [ <local dir> ]
+#Install chart values and variables
+  helm show values  repo/chart-name [ <local dir> ]
+
+
+
+## Locate the Repo from hub  ## https://stackoverflow.com/questions/60994725/k8s-how-to-install-charts-from-the-helm-hub
+ helm search hub metrics-server --max-col-width 1000| tr "\t"  "\n"
+ #get the repo details from this location
+ $ curl -s https://raw.githubusercontent.com/helm/hub/master/config/repo-values.yaml | grep cloudbees
+

@@ -1,4 +1,5 @@
 https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
+https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 
 #Verify that the search path and name server are set up like the following
 kubectl exec -i -t dnsutils -- nslookup kubernetes.default

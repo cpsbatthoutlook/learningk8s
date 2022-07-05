@@ -1,0 +1,20 @@
+
+kc get all -A -l k8s-app=metrics-server
+    NAMESPACE     NAME                                  READY   STATUS    RESTARTS   AGE
+    kube-system   pod/metrics-server-658867cdb7-cv4v2   0/1     Running   0          8s
+
+    NAMESPACE     NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+    kube-system   service/metrics-server   ClusterIP   10.102.246.158   <none>        443/TCP   8s
+
+    NAMESPACE     NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+    kube-system   deployment.apps/metrics-server   0/1     1            0           8s
+
+    NAMESPACE     NAME                                        DESIRED   CURRENT   READY   AGE
+    kube-system   replicaset.apps/metrics-server-658867cdb7   1         1         0       8s
+
+kc api-resources
+    error: unable to retrieve the complete list of server APIs: metrics.k8s.io/v1beta1: the server is currently unable to handle the request
+
+kc top node
+    Error from server (ServiceUnavailable): the server is currently unable to handle the request (get nodes.metrics.k8s.io)
+

@@ -1,0 +1,14 @@
+TRAEFIK
+
+It is a router not a proxy. 
+Inbuilt K8s network elements : {CLUSTERIP, NODEPORT, LB } are all L4 tier
+Ingress Controller :  L7 tier
+    TLS TERMINATION
+
+Two major sections:
+STATIC :     EntryPoint : HTTP/HTTPS,  Provider
+DYNAMIC :     Router, Services, Middleware, Cert 
+
+Discovery:
+
+METALLB -> [ SVC{?LB?} > TRAEFIK > SVC {CLUSTERIP} > POD]

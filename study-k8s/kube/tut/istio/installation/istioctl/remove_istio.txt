@@ -1,0 +1,2 @@
+istioctl x uninstall --purge
+## https://istio.io/latest/docs/setup/install/istioctl/

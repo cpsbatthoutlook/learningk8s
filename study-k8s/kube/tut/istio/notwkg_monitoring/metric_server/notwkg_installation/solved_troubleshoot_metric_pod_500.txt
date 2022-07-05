@@ -1,0 +1,19 @@
+== kubectl top nodes ==
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get nodes.metrics.k8s.io)
+     kubectl get --raw "/apis/metrics.k8s.io/"
+      kubectl get --raw "/api/v1/nodes/knode1" | jq ".metadata" -c
+         kubectl get --raw "/api/v1/nodes/knode1" | jq ".status.images[].names" ## All imageson a node
+
+ # kubectl -n kube-system get all | grep metric
+pod/metrics-server-678f4bf65b-vwcpc   0/1     Running   0              14m
+service/metrics-server   ClusterIP   10.105.245.252   <none>        443/TCP                  14m
+deployment.apps/metrics-server   0/1     1            0           14m
+replicaset.apps/metrics-server-678f4bf65b   1         1         0       14m
+
+ #  kubectl -n kube-system describe pod/metrics-server-678f4bf65b-vwcpc
+  Normal   Pulled     15m                  kubelet            Successfully pulled image "k8s.gcr.io/metrics-server/metrics-server:v0.6.1" in
+2.734557753s
+  Warning  Unhealthy  48s (x100 over 15m)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 500
+
+   ### Add folloing items in the depoloyment manifest :  --kubelet-insecure-tls
+

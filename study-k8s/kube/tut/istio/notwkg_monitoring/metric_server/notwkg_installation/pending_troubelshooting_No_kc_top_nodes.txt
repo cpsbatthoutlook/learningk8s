@@ -1,0 +1,13 @@
+## Install Metric server
+
+## run kc top nodes
+
+##  kc get --raw "/apis/metrics.k8s.io/"  ## no sub trees
+
+##  kc get apiservice | grep metric 
+
+## kc describe apiservice v1beta1.metrics.k8s.io
+
+ Message:               failing or missing response from https://10.98.172.88:443/apis/metrics.k8s.io/v1beta1: Get "https://10.98.172.88:4
+43/apis/metrics.k8s.io/v1beta1": context deadline exceeded
+
