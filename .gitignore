@@ -7,3 +7,4 @@
 **/authorized_keys
 **/id_rsa.pub
 **/*.ppk
+**/istioctl/binaries/istio-1.14.1

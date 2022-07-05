@@ -1,0 +1,105 @@
+REFERENCE: https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
+
+SOLUTION LINK: https://github.com/kubernetes-sigs/metrics-server/issues/623
+
+TROUBLESHOOTING:
+kc top node | pod
+	the server is currently unable to handle the request (get pods.metrics.k8s.io)  
+kc logs -f 
+	"failing or missing response from "
+kc describe apiservice v1beta1.metrics.k8s.io
+	failing or missing response from https://10.98.199.135:443/apis/metrics.k8s.io/v1beta1: Get "https://10.98.199.135:443/apis/metrics.k8s.io/v1beta1": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+kc get svc -A -l "app.kubernetes.io/name=metrics-server"   
+	default     metrics-server   ClusterIP   10.98.199.135   <none>        443/TCP   3h6m
+kc -n kube-system logs -f pod/kube-controller-manager-kmaster | grep -v PartialObject
+	W0705 20:40:58.197561       1 garbagecollector.go:747] failed to discover some groups: map[metrics.k8s.io/v1beta1:the server is currently unable to handle the request]
+
+
+STEPS:
+1. Create the CA file and aggregator key pair. NOT NEEDED: as /etc/kubernetes/pki already has the proxy-client-* entries. Edit /etc/kubernetes/manifests/kube-apiserver.yaml
+#  openssl genrsa -out aggregator-ca.key 2048
+#  openssl req -x509 -new -nodes -key aggregator-ca.key -days 10000 -out aggregator-ca.pem -subj "/CN=aggregator/O=k8s/OU=system"
+#  openssl genrsa -out aggregator.key 2048
+#  openssl req -new -key aggregator.key -out aggregator.csr -subj "/CN=aggregator/O=k8s/OU=System"
+#  openssl x509 -req -in aggregator.csr -CA aggregator-ca.pem -CAkey aggregator-ca.key -CAcreateserial -out aggregator.pem -days 10000
+
+2. Configure kube-apiserver with ARGS : ONLY  --enable-aggregator-routing=true  was needed
+# --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/ca/ca.pem --proxy-client-key-file=/etc/kubernetes/ca/aggregator.pem --proxy-client-key-file=/etc/kubernetes/ca/aggregator.key --requestheader-client-ca-file=/etc/kubernetes/ca/aggregator-ca.pem --requestheader-allowed-names= --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --enable-aggregator-routing=true 
+
+
+3. Restart the kube-apiserver. RESTARTS automatically after YAML file modification
+
+4. Deploy metrics-server
+
+4.1 Create secret with Aggregator CA file
+ kubectl create secret generic aggregator-ca-cert --from-file=/etc/kubernetes/ca/aggregator-ca.pem -n kube-system
+
+4.2 Component file (partial)
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        k8s-app: metrics-server
+    spec:
+      containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+        - --requestheader-allowed-names=aggregator
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --requestheader-client-ca-file=/etc/kubelet/ca/aggregator-ca.pem
+        - --logtostderr
+        - --v=3
+        image: k8s.gcr.io/metrics-server/metrics-server:v0.4.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /livez
+            port: https
+            scheme: HTTPS
+          periodSeconds: 10
+        name: metrics-server
+        ports:
+        - containerPort: 4443
+          name: https
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: https
+            scheme: HTTPS
+          periodSeconds: 10
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-dir
+        - name: aggregator-ca
+          mountPath: /etc/kubelet/ca
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-cluster-critical
+      serviceAccountName: metrics-server
+      volumes:
+      - emptyDir: {}
+        name: tmp-dir
+      - name: aggregator-ca
+        secret:
+          secretName: aggregator-ca-cert
+
+
+
+## Change kube-apiserver settings 
+https://stackoverflow.com/questions/50352621/where-is-kube-apiserver-located/50356764#50356764
+
