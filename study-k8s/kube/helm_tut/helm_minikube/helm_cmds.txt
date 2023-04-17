@@ -1,0 +1,14 @@
+alias h='helm '
+helm version --short
+
+dd=demo-guestbook
+h install demo-guestbook guestbook  ## install guestbook chart
+h list --short
+ h rollback demo-guestbook 1
+h history demo-guestbook
+h delete $dd
+## verify config
+h template demo-guestbook  # Get the YAML
+h get manifest demo-guestbook  # Get the YAML
+h install --dry-run
+h get all  release-name # for running cluster

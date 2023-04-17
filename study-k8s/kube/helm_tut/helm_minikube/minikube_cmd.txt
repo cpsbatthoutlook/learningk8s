@@ -1,0 +1,10 @@
+alias m='minikube '
+m addons enable ingress
+m addons enable metrics-server
+m kubectl -- get pods -A
+m status
+m ip   ## cluster IP .. put it in the /etc/hosts for frontend.minikube.local backend.minikube.local
+m tunnel ##?
+m dashboard --url=false
+
+kubectl proxy --address='0.0.0.0' --disable-filter=true

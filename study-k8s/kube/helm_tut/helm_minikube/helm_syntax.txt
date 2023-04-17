@@ -1,0 +1,60 @@
+Values can come from : Values.yaml, Chart.yaml, Release
+
+{{ .Value.field }}
+{{- .Value.field -}}  ## to remove \n front and back
+
+
+Logical operator
+eq .Val1 .Val2
+ne .Val1 .Val2
+and .Val1 .Val2
+or .Val1 .Val2
+lt .Val1 .Val2
+gt .Val1 .Val2
+not .Val1
+
+
+Conditional
+ {{- if .Values.service.enabled -}}
+  {{- else -}}
+  {{- end -}}
+
+
+ {{- range .Values.ingress.hosts }}
+ {{- end }}
+
+
+Modifying scopes
+{{ .Values.service.type }}
+{{ .Values.service.port }}
+
+  instead
+  {{ with .Values.Service }}
+     {{ .type }}
+     {{ .port }}
+  {{ end }}
+
+  if want  to use external values in with clause
+  {{ $chartName := .Chart.name }}
+  {{ with .Values.Service }}
+     {{ .type }}
+     {{ .port }}
+     {{ $chartName }}
+  {{ end }}
+
+
+functions 
+  quote value
+  default default_value value
+  upper value
+  trunc value 63
+  trimSuffix "-" value
+  randAlphaNum 10
+  toYaml value
+  printf format value 
+  
+functions 
+  value | quote
+  value | default default_value 
+  ..
+  list value | join "-" 
