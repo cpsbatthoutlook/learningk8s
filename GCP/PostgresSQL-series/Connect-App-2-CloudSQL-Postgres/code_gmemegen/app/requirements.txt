@@ -1,0 +1,7 @@
+flask
+pillow
+pg8000==1.16.6
+Flask-SQLAlchemy
+google-cloud-sqlcommenter
+sqlalchemy
+

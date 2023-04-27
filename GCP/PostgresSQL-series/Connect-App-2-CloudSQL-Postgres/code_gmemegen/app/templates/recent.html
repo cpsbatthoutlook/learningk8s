@@ -1,0 +1,17 @@
+{% include  "header.html" %}
+        <div class="ui segment">
+            <h2 class="ui dividing header">
+                <i class="picture icon"></i>
+                <div class="content">
+                    Recent Memes
+                </div>
+            </h2>
+            <div class="ui medium images" style="vertical-align: top">
+            {% for meme in memes %}
+                 <a href="{{ url_for('view_meme', meme_id=meme.id) }}">
+                    <img class="ui rounded image" src="{{ url_for('view_meme', meme_id=meme.id) }}">
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+{% include  "footer.html" %}

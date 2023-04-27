@@ -1,0 +1,17 @@
+{% include  "header.html" %}
+        <div class="ui center aligned segment">
+            <h2 class="ui dividing header">
+                <i class="picture icon"></i>
+                <div class="content">
+                    Create your meme
+                </div>
+            </h2>
+            <div class="ui medium images" style="vertical-align: top">
+            {% for template in templates %}
+                <a  href="{{ url_for('get_create', template=template) }}">
+                    <img class="ui rounded image" src="{{ url_for('static', filename='templates/%s' % template) }}">
+                </a> 
+            {% endfor %}
+            </div>
+        </div>
+{% include  "footer.html" %}

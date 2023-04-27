@@ -1,0 +1,11 @@
+*.pyc
+env/*
+venv/*
+.DS_STORE
+
+# IntelliJ
+.idea/*
+*.iml
+
+# Generated files
+app/static/memes/*
