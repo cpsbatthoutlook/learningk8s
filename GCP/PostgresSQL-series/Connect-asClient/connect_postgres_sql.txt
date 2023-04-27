@@ -1,0 +1,71 @@
+
+
+## Create Instance and DB
+xx="  --instance=chander-db-instance "
+gcloud init
+
+gcloud sql instances create chander-testdb --database-version=POSTGRES_12  --cpu=1 --memory=4GB 
+gcloud sql databases create chander-db $xx
+
+## User mgment
+# https://cloud.google.com/sql/docs/postgres/create-manage-users#gcloud
+xx="  --instance=chander-testdb "
+gcloud sql users create user-name $xx  --password=
+gcloud sql users set-password postgres $xx --prompt-for-password
+gcloud sql users list $xx
+gcloud sql users delete $xx
+
+
+## IAM  >> Permissions are grouped in ROLES, roles are granted to PRINCIPALS {either users or SA }	
+
+## GKE
+ https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes
+
+
+### Enable API
+gcloud services enable compute.googleapis.com sqladmin.googleapis.com \
+     container.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com
+
+### Start cloudSQL instance
+gcloud sql instances create quickstart-instance \
+--database-version=POSTGRES_13 --cpu=1 --memory=4GB --region=us-central --root-password=DB_ROOT_PASSWORD
+
+#### Create DB
+gcloud sql databases create quickstart_db --instance=quickstart-instance
+
+#### Create users
+gcloud sql users create quickstart-user --instance=quickstart-instance --password=DB_PASS
+
+
+###Create GKE cluster
+gcloud container clusters create-auto gke-cloud-sql-quickstart     --region us-central1
+gcloud container clusters get-credentials gke-cloud-sql-quickstart   --region us-central1
+
+
+## 
+cloudshell_open --repo_url "https://github.com/GoogleCloudPlatform/python-docs-samples" --dir "cloud-sql/postgres/sqlalchemy" --page "editor" --force_new_clone
+
+#SA
+sqlsa="gke-quickstart-service-account"
+PR_ID=${ }
+gcloud iam service-accounts create ${sqlsa} --display-name="GKE Quickstart Service Account"
+gcloud projects add-iam-policy-binding ${PR_ID} --member="serviceAccount:${sqlsa}@${PR_ID}.iam.gserviceaccount.com" --role="roles/cloudsql.client"
+gcloud projects add-iam-policy-binding ${PR_ID} --member="serviceAccount:${sqlsa}@${PR_ID}.iam.gserviceaccount.com" --role="roles/logging.logWriter"
+kubectl apply -f service-account.yaml
+
+NS=default
+KSA=ksa-cloud-sql
+gcloud iam service-accounts add-iam-policy-binding --role="roles/iam.workloadIdentityUser" \
+  --member="serviceAccount:${PR_ID}.svc.id.goog${NS}/${KSA}"  ${sqlsa}@${PR_ID}.iam.gserviceaccount.com
+kubectl annotate serviceaccount ${KSA}   iam.gke.io/gcp-service-account=${sqlsa}@${PR_ID}.iam.gserviceaccount.com
+
+
+##Configure secrets
+sqlsec=gke-cloud-sql-secrets
+kubectl create secret generic ${sqlsec}   --from-literal=database=quickstart_db \
+  --from-literal=username=quickstart-user  --from-literal=password=DB_PASS
+
+gcloud artifacts repositories create gke-cloud-sql-repo --project=${PR_ID} --repository-format=docker --location=us-central1 \
+  --description="GKE Quickstart sample app"
+a-cloud-sqlcloud builds submit \
+  --tag us-central1-docker.pkg.dev/${PR_ID}/gke-cloud-sql-repo/gke-sql .

@@ -1,0 +1,41 @@
+
+
+## Create Instance and DB
+xx="  --instance=chander-testdb "
+gcloud init
+
+gcloud sql instances create chander-testdb --database-version=POSTGRES_12 \
+--cpu=1 --memory=4GB --region=REGION 
+
+
+
+gcloud sql databases create chander-db $xx
+
+## User mgment
+# https://cloud.google.com/sql/docs/postgres/create-manage-users#gcloud
+xx="  --instance=chander-testdb "
+gcloud sql users create user-name $xx  --password=
+gcloud sql users set-password postgres $xx --prompt-for-password
+gcloud sql users list $xx
+gcloud sql users delete $xx
+
+
+## IAM  >> Permissions are grouped in ROLES, roles are granted to PRINCIPALS {either users or SA }	
+
+
+
+
+
+
+
+##Connect from GCloud
+gcloud services enable sqladmin.googleapis.com
+gcloud sql connect chander-testdb --user=postgres
+
+CREATE DATABASE guestbook;
+\connect guestbook;
+CREATE TABLE entries (guestName VARCHAR(255), content VARCHAR(255),  entryID SERIAL PRIMARY KEY);
+INSERT INTO entries (guestName, content) values ('first guest', 'I got here!');
+INSERT INTO entries (guestName, content) values ('second guest', 'Me too!');
+SELECT * FROM entries;
+
