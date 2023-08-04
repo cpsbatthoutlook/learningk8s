@@ -1,0 +1,25 @@
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: sql-instance
+  #namespace: service-instances
+spec:
+  databaseVersion: POSTGRES_14
+  #! If you have deployed your cluster into a different region, you might want
+  #! to change this and deploy the SQLInstance into the same region as the
+  #! cluster, to avoid traffic going across regions.
+  region: us-cental1
+  rootPassword:
+    valueFrom:
+      secretKeyRef:
+        key: password
+        name: sql-admin-creds
+  settings:
+    tier: db-g1-small
+    ipConfiguration:
+      authorizedNetworks:
+      - name: cluster-NAT-IP
+        #! Update this value with your NAT IP address in CIDR notation (e.g. 8.8.8.8/32). See above.
+        value: 34.135.35.71
+      ipv4Enabled: true
+---
