@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  cats: "5"
+  dogs: "10"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-08-04T13:19:17Z"
+  name: animal-config
+  namespace: default
+  resourceVersion: "4972"
+  uid: f65d0425-e857-450d-b6b6-4aa7786ec602

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+spec:
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: flask
+        image: gcr.io/using-config-239-da3a40cb/flask-configmaps
+        env:
+          - name: NUM_DOGS
+            valueFrom:
+              configMapKeyRef:
+                name: animal-config
+                key: dogs
+          - name: NUM_CATS
+            valueFrom:
+              configMapKeyRef:
+                name: animal-config
+                key: cats
+        ports:
+        - containerPort: 8080

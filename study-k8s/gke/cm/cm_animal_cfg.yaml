@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  animals.cfg: |
+    catfood=kibble
+    dogfood=mixer
+    fussy_dog=derek
+    latest_feed=10pm
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-08-04T13:31:41Z"
+  name: animal-configfile
+  namespace: default
+  resourceVersion: "10770"
+  uid: be473b3a-e817-4c7a-bb88-f7b0ffd2e02d
