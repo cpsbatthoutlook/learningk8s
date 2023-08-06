@@ -13,6 +13,7 @@ spec:
     spec:
       containers:
       - name: flask
-        image: gcr.io/using-config-239-da3a40cb/flask-configmaps
+        image: gcr.io/playground-s-11-a1d45e15/flask-configmaps
+        #image: gcr.io/using-config-239-da3a40cb/flask-configmaps
         ports:
         - containerPort: 8080

@@ -8,7 +8,7 @@ spec:
   #! If you have deployed your cluster into a different region, you might want
   #! to change this and deploy the SQLInstance into the same region as the
   #! cluster, to avoid traffic going across regions.
-  region: us-cental1
+  region: us-central1
   rootPassword:
     valueFrom:
       secretKeyRef:
