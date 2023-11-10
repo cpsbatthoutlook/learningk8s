@@ -1,4 +1,14 @@
-https://learn.acloud.guru/handson/266bbea4-26e1-4a9c-82e8-97245c26c07f
+## Run Cluster
+cd ~/learningk8s/study-k8s/gke/cronjobs/kubernetes-series/cron/scripts
+. ./env.sh
+gcloud container clusters create ${CLUSTER_NAME} --preemptible --zone ${INSTANCE_ZONE} --scopes cloud-platform --num-nodes 3
+gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${INSTANCE_ZONE}
+cd ~/learningk8s/study-k8s/gke/cm
+Run:  gcloud builds submit --tag gcr.io/${GCLOUD_PROJECT}/${CONTAINER_NAME}-cm
+## gets the output of gcr.io/playground-s-11-fa24472e/cpsbatth-container-cm
+
+
+#-https://learn.acloud.guru/handson/266bbea4-26e1-4a9c-82e8-97245c26c07f
 Using ConfigMaps on GKE
 
 gcloud config list project
