@@ -1,0 +1,11 @@
+#Creating Helm Charts
+Your enterprise has an existing Kubernetes deployment they would like to have converted into a Helm chart. You have been tasked with taking the service as well as the application and combining them into a single Helm chart. In addition, this chart should be able to be deployed as either a nodePort service or a loadBalancer service. If the service is nodePort, then the node port should be set to 30080.
+
+##Convert the Service Manifest into a Service Template in a New Helm Chart
+Create a folder for the new chart and name it blog. Create the minimum necessary scaffolding for the new chart. Locate the existing manifest for the service in the /home/cloud_user/kubernetes directory. Copy the service.yaml file into the new charts template directory. Take the necessary values from the service.yaml file and create entries in the values.yaml file. Create the necessary directives to set the values in the service.yaml template. Make sure the service type is NodePort and the nodePort value is 30080.
+
+- helm create blog && cd blog && edit default values.yaml and template folder to remove everything except svc and Deploy 
+```
+helm install check . --set service.type=NodePort  --dry-run
+cloud_user@k8s-control:~/blog$ 
+```
