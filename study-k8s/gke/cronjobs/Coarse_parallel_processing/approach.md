@@ -22,23 +22,7 @@ export BROKER_URL=amqp://guest:guest@rabbitmq-service:5672
 /usr/bin/amqp-consume --url=$BROKER_URL -q foo -c 1 cat ## Get back
 ```
 
-[OR](https://hevodata.com/learn/kubernetes-batch-job/)
-```
- kc run -i --tty temp --image redis --command "/bin/sh"
-# redis-cli -h redis
-redis:6379> rpush job2 "apple"
-redis:6379> rpush job2 "banana"
-redis:6379> lrange job2 0 -1
-1) "apple"
-2) "banana"
-3) "cherry"
-4) "date"
-5) "fig"
-6) "grape"
-7) "lemon"
-8) "melon"
-9) "orange"
-```
+
 
 ### Create and fill queue
 #### Fill 8 messages in Job1
