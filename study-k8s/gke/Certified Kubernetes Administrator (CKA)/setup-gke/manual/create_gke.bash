@@ -22,3 +22,4 @@ gcloud container clusters list
 echo "get credentials"
 gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${INSTANCE_ZONE}
 
+alias kc=kubectl 

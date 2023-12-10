@@ -18,3 +18,4 @@ spec:
         secretKeyRef:
           name: my-secret
           key: secretkey1
+---

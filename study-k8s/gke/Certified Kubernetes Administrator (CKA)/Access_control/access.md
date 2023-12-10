@@ -1,4 +1,4 @@
-## [Role/Role bindings | ClusterRole/ClusterRoleBindings]|(https://kubernetes.io/docs/reference/access-authn-authz/rbac/ )
+## [Role/Role bindings | ClusterRole/ClusterRoleBindings](https://kubernetes.io/docs/reference/access-authn-authz/rbac/ )
 
 ### Cmds 
 ```
