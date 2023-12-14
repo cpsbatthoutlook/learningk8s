@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-singlezone
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-singlezone
+  template:
+    metadata:
+      labels:
+        app: nginx-singlezone
+    spec:
+      nodeSelector:
+        #topology.kubernetes.io/zone: "us-central1-c"
+        #pre-select node label
+        kubernetes.io/hostname: "gke-cpsbatth-cluster-default-pool-f1bcd934-ntbh"
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80

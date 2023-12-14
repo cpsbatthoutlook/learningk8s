@@ -1,0 +1,58 @@
+# [How to GKE taint](https://cloud.google.com/kubernetes-engine/docs/how-to/node-taints)
+### kc taint nodes gke-cpsbatth-cluster-default-pool-f1bcd934-ntbh dedicated=experimental:NoSchedule #  [ -l specific_labeled_nodes ]
+### kubectl describe node NODE_NAME  | grep -i taints
+###   taints:
+###   - effect: NoSchedule
+###     key: dedicated
+###     value: experimental
+### taint nodes mynode dedicated-  ## remove taints with dediccated
+### gcloud beta container node-pools update POOL_NAME --node-taints="" --cluster=CLUSTER_NAME ## remove all taints
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tolerations-1
+spec:
+  containers:
+  - image: nginx:latest
+    name: test-1
+  tolerations:
+  - key: dedicated
+    operator: Exists
+    effect: NoSchedule
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tolerations-2
+spec:
+  containers:
+  - image: nginx:latest
+    name: test-2
+  tolerations:
+  - key: dedicated
+    operator: Exists
+    effect: NoSchedule
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taint-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: taint-test
+  template:
+    metadata:
+      labels:
+        app: taint-test
+    spec:
+      containers:
+      - image: nginx:latest
+        name: test-1
+      tolerations:
+      - key: dedicated
+        operator: Exists
+        effect: NoSchedule
+

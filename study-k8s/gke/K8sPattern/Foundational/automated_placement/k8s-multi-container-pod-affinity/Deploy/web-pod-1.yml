@@ -1,0 +1,25 @@
+apiVersion: "v1"
+kind: Pod
+metadata:
+  name: web1
+  labels:
+    name: web
+    app: demo
+spec:
+  containers:
+    - name: redis
+      image: redis
+      ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+    - name: python
+      #image: janakiramm/py-red
+      image: us-central1-docker.pkg.dev/playground-s-11-d874486f/myrepo/py-red-sql
+      env:       
+        - name: "REDIS_HOST"
+          value: "localhost"
+      ports:
+        - containerPort: 5000
+          name: http
+          protocol: TCP                    

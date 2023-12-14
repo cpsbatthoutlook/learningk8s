@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cloud.google.com/neg: '{"ingress":true}'
+  creationTimestamp: "2023-11-30T17:20:24Z"
+  labels:
+    component: rabbitmq
+  name: rabbitmq-service
+  namespace: default
+  resourceVersion: "4342"
+  uid: 918a026e-b51f-46b3-b646-514d2e515618
+spec:
+  clusterIP: 10.36.7.173
+  clusterIPs:
+  - 10.36.7.173
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 5672
+    protocol: TCP
+    targetPort: 5672
+  selector:
+    app: taskQueue
+    component: rabbitmq
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
